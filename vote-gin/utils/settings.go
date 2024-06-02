@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var logger *zap.Logger
+var Logger *zap.Logger
 
 var (
 	AppMode string 
@@ -24,23 +24,23 @@ var (
 
 
 type config struct {
-	server   *server
-	database *database
+	Server   *server `toml:"server"`
+	Database *database `toml:"database"`
 }
 
 type server struct {
-	appMode  string `toml:"AppMode"`
-	httpPort string	`toml:"HttpPort"`
-	jwtKey   string	`toml:"JwtKey"`
+	AppMode  string `toml:"AppMode"`
+	HttpPort string	`toml:"HttpPort"`
+	JwtKey   string	`toml:"JwtKey"`
 }
 
 type database struct {
-	db         string `toml:"DB"`
-	dbHost     string `toml:"DBHost"`
-	dbPort     int	`toml:"DBPort"`
-	dbUser     string `toml:"DBUser"`
-	dbPassWord string `toml:"DBPassword"`
-	dbName     string `toml:"DBName"`
+	DB         string `toml:"DB"`
+	DBHost     string `toml:"DBHost"`
+	DBPort     int	`toml:"DBPort"`
+	DBUser     string `toml:"DBUser"`
+	DBPassWord string `toml:"DBPassword"`
+	DBName     string `toml:"DBName"`
 }
 
 // 初始化读取config.toml
@@ -50,6 +50,7 @@ func init() {
 	_, err = toml.DecodeFile("config/config.toml", conf)
 	if err != nil {
 		fmt.Errorf("配置文件读取错误: %w", err)
+		panic("配置文件读取错误")
 	}
 	LoadLogger(conf)
 	LoadData(conf)
@@ -58,26 +59,27 @@ func init() {
 
 // 加载数据库信息
 func LoadData(conf *config) {
-	DB = conf.database.db
-	DBHost = conf.database.dbHost
-	DBPort = conf.database.dbPort
-	DBUser = conf.database.dbUser
-	DBPassWord = conf.database.dbPassWord
-	DBName = conf.database.dbName
+	DB = conf.Database.DB
+	DBHost = conf.Database.DBHost
+	DBPort = conf.Database.DBPort
+	DBUser = conf.Database.DBUser
+	DBPassWord = conf.Database.DBPassWord
+	DBName = conf.Database.DBName
 }
 
 // LoadServer 加载服务器信息
 func LoadServer(conf *config) {
-	AppMode = conf.server.appMode
-	HttpPort = conf.server.httpPort
-	JwtKey = conf.server.jwtKey
+	AppMode = conf.Server.AppMode
+	HttpPort = conf.Server.HttpPort
+	JwtKey = conf.Server.JwtKey
 }
 
 // LoadLogger 加载日志
 func LoadLogger(conf *config) {
 	var err error 
-	logger, err = zap.NewDevelopment()
+	Logger, err = zap.NewDevelopment()
 	if err != nil {
 		fmt.Errorf("日志加载失败：%w", err)
+		panic("日志加载失败")
 	}
 }

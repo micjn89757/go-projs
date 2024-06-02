@@ -1,13 +1,13 @@
 [server]
-AppMode = "debug"
-HttpPort = ":8080"
-JwtKey = "key"
+    AppMode = "debug"
+    HttpPort = ":3000"
+    JwtKey = "key"
 
 [database]
-DB = "mysql"
-DBHost = ""
-DBPort = 3306
-DBUser = "client"
-DBPassWord = "asdjkl"
-DBName = ""
+    DB = "mysql"
+    DBHost = "192.168.197.125"
+    DBPort = 3306
+    DBUser = "client"
+    DBPassWord = "asdjkl"
+    DBName = ""
 
