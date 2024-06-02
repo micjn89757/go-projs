@@ -1,0 +1,13 @@
+[server]
+AppMode = "debug"
+HttpPort = ":8080"
+JwtKey = "key"
+
+[database]
+DB = "mysql"
+DBHost = ""
+DBPort = 3306
+DBUser = "client"
+DBPassWord = "asdjkl"
+DBName = ""
+
