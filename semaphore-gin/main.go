@@ -1,4 +1,4 @@
-package semaphoregin
+package main
 
 import (
 	"net/http"
@@ -23,4 +23,6 @@ func main() {
 			},
 		)
 	})
+
+	router.Run(":8080")
 }
