@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"vote-gin/utils"
+	"vote-gin/model"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -26,6 +27,13 @@ func InitRouter() {
 		)
 	})
 
+	r.POST("/login", func(ctx *gin.Context) {
+		var user model.User
+		err = ctx.ShouldBind(&user)
+		if err != nil {
+			
+		}
+	})
 	if err := r.Run(utils.HttpPort); err != nil {
 		sugar.Errorf("%d端口启动失败: %w", utils.HttpPort, err)
 	}
