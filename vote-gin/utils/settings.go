@@ -49,7 +49,7 @@ func init() {
 	conf := &config{}
 	_, err = toml.DecodeFile("config/config.toml", conf)
 	if err != nil {
-		fmt.Errorf("配置文件读取错误: %w", err)
+		fmt.Printf("parse toml failed:%v", err)
 		panic("配置文件读取错误")
 	}
 	LoadLogger(conf)
@@ -79,7 +79,7 @@ func LoadLogger(conf *config) {
 	var err error 
 	Logger, err = zap.NewDevelopment()
 	if err != nil {
-		fmt.Errorf("日志加载失败：%w", err)
+		fmt.Printf("load logger failed: %v", err)
 		panic("日志加载失败")
 	}
 }

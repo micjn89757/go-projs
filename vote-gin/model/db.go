@@ -17,7 +17,7 @@ func InitDB() {
 	sugar = utils.Logger.Sugar()
 	defer sugar.Sync()
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		utils.DBUser,
 		utils.DBPassWord,
 		utils.DBHost,
@@ -28,11 +28,13 @@ func InitDB() {
 	db, err = sqlx.Open(utils.DB, dsn)
 	if err != nil {
 		sugar.Errorf("参数格式有误:%w\n", err)
+		panic("datasourcename error")
 	}
 
 	err = db.Ping()
 	if err != nil {
 		sugar.Errorf("数据库连接失败:%w\n", err)
+		panic("database connect failed")
 	}
 
 	db.SetMaxOpenConns(20) // 设置与数据库建立连接的最大数目

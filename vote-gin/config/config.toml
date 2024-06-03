@@ -9,5 +9,5 @@
     DBPort = 3306
     DBUser = "client"
     DBPassWord = "asdjkl"
-    DBName = ""
+    DBName = "vote"
 
