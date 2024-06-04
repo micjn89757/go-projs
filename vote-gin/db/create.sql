@@ -2,6 +2,10 @@ CREATE DATABASE IF NOT EXISTS vote;
 
 USE vote;
 
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF NOT EXISTS `user`;
 CREATE TABLE IF NOT EXISTS user (
     id INT NOT NULL,
     username VARCHAR(20) NOT NULL,
