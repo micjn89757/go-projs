@@ -23,18 +23,18 @@ var (
 )
 
 
-type config struct {
-	Server   *server `toml:"server"`
-	Database *database `toml:"database"`
+type Config struct {
+	Server   *Server `toml:"server"`
+	Database *Database `toml:"database"`
 }
 
-type server struct {
+type Server struct {
 	AppMode  string `toml:"AppMode"`
 	HttpPort string	`toml:"HttpPort"`
 	JwtKey   string	`toml:"JwtKey"`
 }
 
-type database struct {
+type Database struct {
 	DB         string `toml:"DB"`
 	DBHost     string `toml:"DBHost"`
 	DBPort     int	`toml:"DBPort"`
@@ -46,7 +46,7 @@ type database struct {
 // 初始化读取config.toml
 func init() {
 	var err error
-	conf := &config{}
+	conf := &Config{}
 	_, err = toml.DecodeFile("config/config.toml", conf)
 	if err != nil {
 		fmt.Printf("parse toml failed:%v", err)
@@ -58,7 +58,7 @@ func init() {
 }
 
 // 加载数据库信息
-func LoadData(conf *config) {
+func LoadData(conf *Config) {
 	DB = conf.Database.DB
 	DBHost = conf.Database.DBHost
 	DBPort = conf.Database.DBPort
@@ -68,14 +68,14 @@ func LoadData(conf *config) {
 }
 
 // LoadServer 加载服务器信息
-func LoadServer(conf *config) {
+func LoadServer(conf *Config) {
 	AppMode = conf.Server.AppMode
 	HttpPort = conf.Server.HttpPort
 	JwtKey = conf.Server.JwtKey
 }
 
 // LoadLogger 加载日志
-func LoadLogger(conf *config) {
+func LoadLogger(conf *Config) {
 	var err error 
 	Logger, err = zap.NewDevelopment()
 	if err != nil {

@@ -13,6 +13,7 @@ var db *sqlx.DB
 var err error 
 var sugar *zap.SugaredLogger
 
+// TODO 更改成单例
 func InitDB() {
 	sugar = utils.Logger.Sugar()
 	defer sugar.Sync()
@@ -39,4 +40,9 @@ func InitDB() {
 
 	db.SetMaxOpenConns(20) // 设置与数据库建立连接的最大数目
 	db.SetMaxIdleConns(10) // 设置连接池中最大的闲置连接数
+}
+
+
+func Close() {
+	db.Close()
 }
