@@ -2,10 +2,11 @@ CREATE DATABASE IF NOT EXISTS vote;
 
 USE vote;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
     id INT NOT NULL,
-    name VARCHAR(30),
-    password VARCHAR(30),
+    username VARCHAR(20) NOT NULL,
+    password VARCHAR(500) NOT NULL,
+    role int DEFAULT 2,
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_time DATETIME DEFAULT CURRENT_TIMESTAMP,
 );

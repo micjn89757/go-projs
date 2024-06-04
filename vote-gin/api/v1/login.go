@@ -26,7 +26,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	user, code = model.CheckLogin(user.Name, user.Password)
+	user, code = model.CheckLogin(user.Username, user.Password)
 	if code == msgcode.SUCCESS {
 		// TODO 设置token
 		ctx.JSON(http.StatusOK, gin.H{
@@ -35,7 +35,7 @@ func Login(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": code,
-			"data": user.Name,
+			"data": user.Username,
 			"id": user.ID,
 			"msg": msgcode.GetErrMsg(code),
 			"token": "token",

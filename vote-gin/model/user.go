@@ -9,17 +9,18 @@ import (
 
 type User struct {
 	ID int 			`db:"id"`
-	Name     string `db:"name"`
-	Password string `db:"password"`
+	Username     string `db:"username" json:"username"`
+	Password string `db:"password" json:"password"`
+	Role int `db:"role"`
 }
 
 // CheckUser 查询用户是否存在
-func CheckUser(name string) int {
+func CheckUser(username string) int {
 	var user User 
 	var err error
 
-	sqlStr := "select id from users where name = ?"
-	err = db.Get(user, sqlStr, name)
+	sqlStr := "select id from user where username = ?"
+	err = db.Get(user, sqlStr, username)
 
 	if err != nil {
 		return msgcode.ERROR_USER_NOT_EXIST
@@ -33,7 +34,7 @@ func GetUser(id int) (User, int) {
 	var user User 
 	var err error 
 
-	sqlStr := "select name, password from users where id = ?"
+	sqlStr := "select username, password from user where id = ?"
 
 	err = db.Get(&user, sqlStr, id)
 
@@ -57,7 +58,7 @@ func CheckLogin(name string, password string) (User, int) {
 	var err error
 	var passwordErr error
 
-	sqlStr := "select name, password from users where name = ?"
+	sqlStr := "select username, password from user where username = ?"
 	err = db.Get(&user, sqlStr, name)
 
 	if err != nil {
