@@ -23,7 +23,8 @@ func Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"msg": "error",
 		})
-		return
+		ctx.Abort()
+		return 
 	}
 
 	user, code = model.CheckLogin(user.Username, user.Password)
