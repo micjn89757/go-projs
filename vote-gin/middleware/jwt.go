@@ -5,6 +5,7 @@ import (
 	"time"
 	"vote-gin/utils"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -52,5 +53,12 @@ func (j *JWT) ParseToken(tokenString string) error {
 	} else {
 		sugar.Error(jwt.ErrInvalidKeyType.Error())
 		return jwt.ErrInvalidType
+	}
+}
+
+// JWTAuthMiddleware
+func JWTAuthMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+
 	}
 }

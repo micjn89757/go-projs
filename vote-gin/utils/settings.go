@@ -53,13 +53,14 @@ func init() {
 	conf := &Config{}
 	var configDir string
 
-
+	// 获取当前项目根目录路径
 	if ex, err := os.Getwd(); err == nil {
 		if filepath.Base(ex) == "vote-gin" {
 			configDir = filepath.Join(ex, "config/config.toml")
 		}else{
-			for filepath.Base(configDir) != "vote-gin" {
-				configDir = filepath.Dir(ex)
+			for filepath.Base(configDir) != "vote-gin"{
+				configDir = filepath.Dir(ex)  
+				fmt.Println(configDir)
 			}
 
 			if configDir == "" || configDir == "." {
