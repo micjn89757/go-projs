@@ -2,6 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
+	// "path/filepath"
 
 	"github.com/BurntSushi/toml"
 	"go.uber.org/zap"
@@ -47,10 +51,29 @@ type Database struct {
 func init() {
 	var err error
 	conf := &Config{}
-	_, err = toml.DecodeFile("config/config.toml", conf)
+	var configDir string
+
+
+	if ex, err := os.Getwd(); err == nil {
+		if filepath.Base(ex) == "vote-gin" {
+			configDir = filepath.Join(ex, "config/config.toml")
+		}else{
+			for filepath.Base(configDir) != "vote-gin" {
+				configDir = filepath.Dir(ex)
+			}
+
+			if configDir == "" || configDir == "." {
+				panic("cannot find config file path")
+			}else {
+				configDir = filepath.Join(configDir, "config/config.toml")
+			}
+		}
+	}
+
+	_, err = toml.DecodeFile(configDir, conf)
 	if err != nil {
 		fmt.Printf("parse toml failed:%v", err)
-		panic("配置文件读取错误")
+		panic("config file decode failed")
 	}
 	LoadLogger(conf)
 	LoadData(conf)
