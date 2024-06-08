@@ -9,6 +9,7 @@ const (
 	ERROR_USERNAME_USED = 1001
 	ERROR_PASSWORD_WRONG = 1002
 	ERROR_USER_NOT_EXIST = 1003
+	ERROR_TOKEN_NOT_EXIST = 1004
 )
 
 // 错误码对应的信息
@@ -18,6 +19,7 @@ var codeMsg = map[int]string{
 	ERROR_USER_NOT_EXIST:	"用户不存在",
 	ERROR_USERNAME_USED:	"用户已存在",
 	ERROR_PASSWORD_WRONG:	"密码错误",
+	ERROR_TOKEN_NOT_EXIST: 	"TOKEN不存在，请重新登录",
 }
 
 func GetErrMsg(code int) string {

@@ -2,8 +2,12 @@ package middleware
 
 import (
 	"fmt"
+	"go/token"
+	"net/http"
+	"strings"
 	"time"
 	"vote-gin/utils"
+	"vote-gin/utils/msgcode"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -59,6 +63,34 @@ func (j *JWT) ParseToken(tokenString string) error {
 // JWTAuthMiddleware
 func JWTAuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
+		var code int
+		// token可能放在请求头，请求体或URI中
+		// 1. 放在请求头中
+		authHeader := c.Request.Header.Get("Authorization")
+		if authHeader == ""{
+			code = msgcode.ERROR_TOKEN_NOT_EXIST
+			c.JSON(http.StatusOK, gin.H{
+				"status": code,
+				"msg": msgcode.GetErrMsg(code),
+			})
 
+			c.Abort()
+			return 
+		}
+
+
+		// 获取tokenString
+		// 如果放在Authorization，格式为"Bear [tokenString]"
+		checkToken := strings.Split(authHeader, " ")
+		//
+
+		if !(len(checkToken) == 2 && checkToken[0] == "Bearer") {
+			c.JSON(
+				http.StatusOK,
+				gin.H{
+					
+				},
+			)
+		}
 	}
 }
