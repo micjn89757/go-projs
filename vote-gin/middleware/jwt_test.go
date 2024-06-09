@@ -20,7 +20,7 @@ func TestJWT(t *testing.T) {
 
 	t.Log(tokenString)
 
-	err = jwt.ParseToken(tokenString)
+	_, err = jwt.ParseToken(tokenString)
 	if err != nil {
 		t.Errorf("parse token failed, %s", err.Error())
 	}

@@ -53,13 +53,13 @@ func GetUser(id int) (User, int) {
 // TODO DeleteUser 删除用户
 
 // 后台登陆验证
-func CheckLogin(name string, password string) (User, int) {
+func CheckLogin(username string, password string) (User, int) {
 	var user User
 	var err error
-	var passwordErr error
+	// var passwordErr error
 
-	sqlStr := "select username, password from user where username = ?"
-	err = db.Get(&user, sqlStr, name)
+	sqlStr := "select id, username, password, role from user where username = ?"
+	err = db.Get(&user, sqlStr, username)
 
 	if err != nil {
 		return user, msgcode.ERROR_USER_NOT_EXIST 
@@ -69,12 +69,11 @@ func CheckLogin(name string, password string) (User, int) {
 
 	// TODO 实验性
 	if password != user.Password {
-		passwordErr = errors.New("password err")
-	}
-
-	if passwordErr != nil {
 		return user, msgcode.ERROR_PASSWORD_WRONG
 	}
 
+	if user.Role != 1 {
+		return user, msgcode.ERROR_USER_NO_RIGHT
+	}
 	return user, msgcode.SUCCESS
 }

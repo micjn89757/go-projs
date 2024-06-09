@@ -1,7 +1,7 @@
 [server]
     AppMode = "debug"
     HttpPort = ":3000"
-    JwtKey = "key"
+    JwtKey = "mykey"
 
 [database]
     DB = "mysql"
