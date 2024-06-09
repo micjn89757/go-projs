@@ -2,6 +2,7 @@ package routes
 
 import (
 	"vote-gin/api/v1"
+	"vote-gin/middleware"
 	"vote-gin/model"
 	"vote-gin/utils"
 
@@ -35,9 +36,18 @@ func InitRouter() {
 
 	// 前端接口
 	router := r.Group("api/v1")
+	router.Use(middleware.JWTAuthMiddleware())
 	{
 		// 登录控制
 		router.POST("login", v1.Login)
+		// router.POST("login", func(ctx *gin.Context) {
+		// 	username,_ := ctx.Get("username")
+		// 	username, _ = username.(string)
+		// 	ctx.JSON(http.StatusOK, gin.H{
+		// 		"msg": "login success",
+		// 		"data": username,
+		// 	})
+		// })
 	}
 	if err = r.Run(utils.HttpPort); err != nil {
 		sugar.Errorf("%d端口启动失败: %w", utils.HttpPort, err)

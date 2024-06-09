@@ -45,8 +45,6 @@ func Login(ctx *gin.Context) {
 			"token": tokenString,
 		})
 	}
-
-
 }
 
 // setToken 生成Token
