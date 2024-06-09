@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"vote-gin/utils/msgcode"
 
 	// "golang.org/x/crypto/bcrypt"

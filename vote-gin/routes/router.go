@@ -2,7 +2,6 @@ package routes
 
 import (
 	"vote-gin/api/v1"
-	"vote-gin/middleware"
 	"vote-gin/model"
 	"vote-gin/utils"
 
@@ -28,11 +27,11 @@ func InitRouter() {
 	r.Use(gin.Recovery())
 	
 	// 后台管理路由接口
-	auth := r.Group("api/v1")
-	auth.Use(middleware.JWTAuthMiddleware())
-	{
-		auth.POST("/login", v1.Login)
-	}
+	// auth := r.Group("api/v1")
+	// auth.Use(middleware.JWTAuthMiddleware())
+	// {
+	// 	auth.POST("/login", v1.Login)
+	// }
 
 	// 前端接口
 	router := r.Group("api/v1")
