@@ -3,3 +3,4 @@ go.work.sum
 *.exe
 *.out
 # *_test.go
+*.log
