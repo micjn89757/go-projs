@@ -24,6 +24,8 @@ var (
 	DBUser string 
 	DBPassWord string 
 	DBName string 
+
+	ProjPath string 
 )
 
 
@@ -53,15 +55,18 @@ func init() {
 	conf := &Config{}
 	var configDir string
 
-	// 获取当前项目根目录路径
+	// 获取当前项目根目录路径, 以及配置文件路径
 	if ex, err := os.Getwd(); err == nil {
 		if filepath.Base(ex) == "vote-gin" {
 			configDir = filepath.Join(ex, "config/config.toml")
+			ProjPath = ex
 		}else{
 			for filepath.Base(configDir) != "vote-gin"{
 				configDir = filepath.Dir(ex)  
-				fmt.Println(configDir)
+				// fmt.Println(configDir)
 			}
+
+			ProjPath = configDir
 
 			if configDir == "" || configDir == "." {
 				panic("cannot find config file path")

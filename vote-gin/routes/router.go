@@ -24,7 +24,7 @@ func InitRouter() {
 	// nil 为不计算，避免性能消耗，上线应当设置
 	_ = r.SetTrustedProxies(nil)
 	
-	r.Use(gin.Logger())
+	r.Use(middleware.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.Cors())
 	// 后台管理路由接口
@@ -36,7 +36,6 @@ func InitRouter() {
 
 	// 前端接口
 	router := r.Group("api/v1")
-	router.Use(middleware.JWTAuthMiddleware())
 	{
 		// 登录控制
 		router.POST("login", v1.Login)
