@@ -26,7 +26,7 @@ func InitRouter() {
 	
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	
+	r.Use(middleware.Cors())
 	// 后台管理路由接口
 	// auth := r.Group("api/v1")
 	// auth.Use(middleware.JWTAuthMiddleware())
