@@ -85,7 +85,7 @@ func CheckLogin(username string, password string) (User, int) {
 		return user, msgcode.ERROR_USER_NOT_EXIST 
 	}
 
-	sugar.Info(ScryptPw(password))
+	sugar.Infoln(ScryptPw(password))
 	passwordErr = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))  
 
 	if passwordErr != nil {

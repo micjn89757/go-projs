@@ -110,3 +110,10 @@ func setToken(ctx *gin.Context, user model.User) {
 func init() {
 	sugar = utils.Logger.Sugar()
 }
+
+
+func LoginHTML(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "login.html", gin.H{
+		"success": "yes",
+	})
+}
