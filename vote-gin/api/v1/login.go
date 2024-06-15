@@ -47,6 +47,35 @@ func Login(ctx *gin.Context) {
 	}
 }
 
+// 前台登录
+func LoginFront(ctx *gin.Context) {
+	var err error 
+	var user model.User
+	var code int 
+
+	err = ctx.ShouldBindBodyWithJSON(&user)
+	if err != nil {
+		sugar.Errorf("get params failed, %s", err.Error())
+		ctx.JSON(http.StatusBadGateway, gin.H{
+			"code": msgcode.ERROR,
+			"msg": err.Error(),
+		})
+		ctx.Abort()
+		return 
+	}
+
+	user, code = model.CheckLoginFront(user.Username, user.Password)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": code,
+		"data":	user.Username,
+		"id": user.ID,
+		"msg": msgcode.GetErrMsg(code),
+	})
+
+
+}
+
 // setToken 生成Token
 func setToken(ctx *gin.Context, user model.User) {
 	j := middleware.NewJWT()

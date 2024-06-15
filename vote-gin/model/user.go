@@ -3,12 +3,12 @@ package model
 import (
 	"vote-gin/utils/msgcode"
 
-	// "golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	ID int 			`db:"id"`
-	Username     string `db:"username" json:"username"`
+	Username     string `db:"username" json:"username" binding:"required"`
 	Password string `db:"password" json:"password"`
 	Role int `db:"role"`
 }
@@ -51,11 +51,32 @@ func GetUser(id int) (User, int) {
 // TODO ChangePassword 修改用户密码
 // TODO DeleteUser 删除用户
 
+// 前台登陆验证
+func CheckLoginFront(username string, password string) (User, int) {
+	var err error
+	var user User
+	var passwordErr error
+	sqlStr := "select id, username, password, role from user where username = ?"
+	err = db.Get(&user, sqlStr, username)
+
+	if err != nil {
+		return user, msgcode.ERROR_USER_NOT_EXIST
+	}
+
+	passwordErr = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if passwordErr != nil {
+		return user, msgcode.ERROR_PASSWORD_WRONG
+	}
+
+	return user, msgcode.SUCCESS
+}
+
 // 后台登陆验证
 func CheckLogin(username string, password string) (User, int) {
 	var user User
 	var err error
-	// var passwordErr error
+	var passwordErr error
 
 	sqlStr := "select id, username, password, role from user where username = ?"
 	err = db.Get(&user, sqlStr, username)
@@ -64,10 +85,10 @@ func CheckLogin(username string, password string) (User, int) {
 		return user, msgcode.ERROR_USER_NOT_EXIST 
 	}
 
-	// passwordErr = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))  
+	sugar.Info(ScryptPw(password))
+	passwordErr = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))  
 
-	// TODO 实验性
-	if password != user.Password {
+	if passwordErr != nil {
 		return user, msgcode.ERROR_PASSWORD_WRONG
 	}
 
@@ -75,4 +96,18 @@ func CheckLogin(username string, password string) (User, int) {
 		return user, msgcode.ERROR_USER_NO_RIGHT
 	}
 	return user, msgcode.SUCCESS
+}
+
+
+// ScryptPw 生成密码
+func ScryptPw(password string) (string, error) {
+	const cost = 10
+
+	HashPw, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	if err != nil {
+		sugar.Error(err)
+		return "", err
+	}
+
+	return string(HashPw), nil
 }

@@ -2,6 +2,9 @@ package v1
 
 
 // TODO AddUser 添加用户
+func AddUser() {
+	
+}
 // TODO GetUserInfo 查询单个用户
 // TODO GetUsers 查询用户列表
 // TODO EditUser 编辑用户
