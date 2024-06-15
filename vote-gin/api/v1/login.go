@@ -26,7 +26,7 @@ func Login(ctx *gin.Context) {
 	if err != nil {
 		sugar.Errorf("get params failed, %s", err.Error())
 		ctx.JSON(http.StatusBadGateway, gin.H{
-			"code": msgcode.ERROR,
+			"status": msgcode.ERROR,
 			"msg": err.Error(),
 		})
 		ctx.Abort()
@@ -57,7 +57,7 @@ func LoginFront(ctx *gin.Context) {
 	if err != nil {
 		sugar.Errorf("get params failed, %s", err.Error())
 		ctx.JSON(http.StatusBadGateway, gin.H{
-			"code": msgcode.ERROR,
+			"status": msgcode.ERROR,
 			"msg": err.Error(),
 		})
 		ctx.Abort()
