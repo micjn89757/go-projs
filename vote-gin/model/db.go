@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"time"
 	"vote-gin/utils"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,6 +13,14 @@ import (
 var db *sqlx.DB
 var err error 
 var sugar *zap.SugaredLogger
+
+// 基础结构体
+type Base struct {
+	ID 	uint		`db:"id" json:"id"`
+	CreatedTime	time.Time	`db:"created_time" json:"created_time"`
+	UpdatedTime	time.Time	`db:"updated_time" json:"update_time"`
+	DeletedTime	time.Time	`db:"deleted_time" json:"deleted_time"`
+}
 
 // TODO 更改成单例
 func InitDB() {
@@ -41,7 +50,6 @@ func InitDB() {
 	db.SetMaxOpenConns(20) // 设置与数据库建立连接的最大数目
 	db.SetMaxIdleConns(10) // 设置连接池中最大的闲置连接数
 }
-
 
 func Close() {
 	db.Close()

@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	ID int 			`db:"id"`
-	Username     string `db:"username" json:"username" binding:"required"`
-	Password string `db:"password" json:"password"`
-	Role int `db:"role"`
+	Base
+	Username	string 			`db:"username" json:"username" binding:"required"`
+	Password 	string 			`db:"password" json:"password"`
+	Role 		int 			`db:"role"`
 }
 
 // CheckUser 查询用户是否存在

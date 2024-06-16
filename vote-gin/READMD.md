@@ -32,10 +32,11 @@ redis
     ├─admin             
     └─front
 ```
+> ├ alt+195    ─ alt+196  └ alt+192
 
 
-一个包下一个Logger
 
-├ alt+195
-─ alt+196
-└ alt+192
+## 表之间的关系
+投票和选项之间是 1:n
+用户和投票之间是 n:n
+
