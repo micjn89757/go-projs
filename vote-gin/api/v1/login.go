@@ -27,7 +27,7 @@ func Login(ctx *gin.Context) {
 		sugar.Errorf("get params failed, %s", err.Error())
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"status": msgcode.ERROR,
-			"msg": err.Error(),
+			"msg": err.Error(), // !有风险，有可能暴漏数据库的一些链接信息
 		})
 		ctx.Abort()
 		return 
