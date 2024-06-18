@@ -33,9 +33,9 @@ func GetVote(id int) (Vote, int) {
 
 
 // GetVotes 获取投票列表
-func GetUsers(status int, pageSize int, pageNum int) ([]*Vote,int, int) {
+func GetUsers(status int, pageSize int, pageNum int) ([]Vote,int, int) {
 	var err error 
-	var votes []*Vote 
+	var votes []Vote 
 
 	sqlStr := "select id, title, type, status, time, user_id from vote where status = ? Limit ? OFFSET ?"
 
