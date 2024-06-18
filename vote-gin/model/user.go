@@ -10,7 +10,7 @@ type User struct {
 	Base
 	Username	string 			`db:"username" json:"username" binding:"required"`
 	Password 	string 			`db:"password" json:"password"`
-	Role 		int 			`db:"role"`
+	Role 		int 			`db:"role" json:"role"`
 }
 
 // CheckUser 查询用户是否存在
@@ -33,7 +33,7 @@ func GetUser(id int) (User, int) {
 	var user User 
 	var err error 
 
-	sqlStr := "select username, password from user where id = ?"
+	sqlStr := "select id, username, password, role from user where id = ?"
 
 	err = db.Get(&user, sqlStr, id)
 

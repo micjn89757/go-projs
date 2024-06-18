@@ -11,6 +11,11 @@ const (
 	ERROR_USER_NOT_EXIST = 1003
 	ERROR_TOKEN_NOT_EXIST = 1004
 	ERROR_USER_NO_RIGHT = 1005
+
+
+	// 投票相关错误
+	ERROR_VOTE_NOT_EXIST = 1006
+	ERROR_STATUS_NOT_EXISIT = 1007
 )
 
 // 错误码对应的信息
@@ -22,6 +27,8 @@ var codeMsg = map[int]string{
 	ERROR_PASSWORD_WRONG:	"密码错误",
 	ERROR_TOKEN_NOT_EXIST: 	"TOKEN不存在，请重新登录",
 	ERROR_USER_NO_RIGHT: "用户无权限",
+	ERROR_VOTE_NOT_EXIST: "投票内容不存在",
+	ERROR_STATUS_NOT_EXISIT: "此状态投票内容不存在",
 }
 
 func GetErrMsg(code int) string {

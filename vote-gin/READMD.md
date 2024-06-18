@@ -40,3 +40,9 @@ redis
 投票和选项之间是 1:n
 用户和投票之间是 n:n
 
+四张表：
+- user
+- vote
+- vote_opt
+- vote_opt_user
+
