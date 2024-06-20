@@ -35,6 +35,8 @@ func InitDB() {
 		utils.DBName,
 	)
 
+	
+	fmt.Println(dsn)
 	db, err = sqlx.Open(utils.DB, dsn)
 	if err != nil {
 		sugar.Errorf("参数格式有误:%w\n", err)

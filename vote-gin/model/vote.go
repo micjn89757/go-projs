@@ -15,6 +15,14 @@ type Vote struct {
 	UserID	int			`db:"user_id" json:"user_id"`
 }
 
+// CreateVote 创建投票
+//func CreateVote(title string, type int, id int) {
+//	var vote Vote
+//	var err error
+//
+//	sqlStr := "insert into"
+// 
+//}
 
 // GetVote 获取投票内容
 func GetVote(id int) (Vote, int) {

@@ -4,3 +4,4 @@ go.work.sum
 *.out
 # *_test.go
 *.log
+Ginblog/

@@ -1,13 +1,13 @@
 [server]
     AppMode = "debug"
-    HttpPort = ":3000"
+    HttpPort = ":3001"
     JwtKey = "mykey"
 
 [database]
     DB = "mysql"
-    DBHost = "192.168.197.125"
+    DBHost = "192.168.197.133"
     DBPort = 3306
-    DBUser = "client"
+    DBUser = "djn"
     DBPassWord = "asdjkl"
     DBName = "vote"
 

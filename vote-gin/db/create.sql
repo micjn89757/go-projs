@@ -1,5 +1,7 @@
 CREATE DATABASE IF NOT EXISTS vote;
 
+-- admin  $2a$10$s1x4.Fx57DP7CU8GSia5KeEnFyYd9LTwUQXpF0tQHrV8nHFtwUJXi <nil>
+
 USE vote;
 
 -- ----------------------------
