@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS vote (
     PRIMARY KEY (`id`) USING BTREE
 )ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+insert into vote(title, type, status, time, user_id, created_time, updated_time) values("food", 0, 0, 24, 0, "2024-06-23 22:38:20", "2024-06-24 22:38:20");
 -- ----------------------------
 -- Table structure for vote_opt
 -- ----------------------------
@@ -57,6 +58,8 @@ CREATE TABLE IF NOT EXISTS vote_opt(
     PRIMARY KEY (`id`) USING BTREE
 )ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8 COLLATE utf8_general_ci ROW_FORMAT = Dynamic;
 
+insert into vote_opt(name, vote_id, count, created_time, updated_time) values("fish", 1, 0, "2024-06-23 22:38:20", "2024-06-24 22:38:20"),
+    ("malou", 1, 0, "2024-06-23 22:38:20", "2024-06-24 22:38:20");
 -- ----------------------------
 -- Table structure for vote_opt_user
 -- ----------------------------

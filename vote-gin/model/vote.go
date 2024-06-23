@@ -1,18 +1,17 @@
 package model
 
 import (
-	"time"
 	"vote-gin/utils/msgcode"
 )
 
 // 投票内容
 type Vote struct {
 	Base
-	Title  string    `db:"title" json:"title"`
-	Type   int       `db:"type" json:"type"`
-	Status int       `db:"status" json:"status"`
-	Time   time.Time `db:"time" json:"time"`
-	UserID int       `db:"user_id" json:"user_id"`
+	Title  string `db:"title" json:"title"`
+	Type   int    `db:"type" json:"type"`
+	Status int    `db:"status" json:"status"`
+	Time   int    `db:"time" json:"time"`
+	UserID int    `db:"user_id" json:"user_id"`
 }
 
 // CreateVote 创建投票 TODO 还要创建投票选项
@@ -38,8 +37,8 @@ func CreateVote(v Vote) int {
 	return msgcode.SUCCESS
 }
 
-// GetVote 获取投票内容
-func GetVote(id int) (Vote, []VoteOpt, int) {
+// GetVote 获取单个投票内容
+func GetVoteInfo(id uint) (Vote, []VoteOpt, int) {
 	var err error
 	var vote Vote
 	var voteOpts []VoteOpt
@@ -52,15 +51,18 @@ func GetVote(id int) (Vote, []VoteOpt, int) {
 		return vote, voteOpts, msgcode.ERROR_VOTE_NOT_EXIST
 	}
 
-	// 获取投票选项
-	sqlStr = "select id, vote_id, name, count from vote_opt where vote_id = ?"
-	err = db.Select(&voteOpts, sqlStr, vote.ID)
+	// 获取对应投票选项
+	voteOpts, err = GetVoteOpts(id)
+
+	if err != nil {
+		return vote, voteOpts, msgcode.ERROR_VOTE_OPT_NOT_EXIST
+	}
 
 	return vote, voteOpts, msgcode.SUCCESS
 }
 
 // GetVotes 获取投票列表
-func GetUsers(status int, pageSize int, pageNum int) ([]Vote, int, int) {
+func GetVotes(status int, pageSize int, pageNum int) ([]Vote, int, int) {
 	var err error
 	var votes []Vote
 

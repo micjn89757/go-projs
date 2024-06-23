@@ -12,24 +12,25 @@ const (
 	ERROR_USER_NO_RIGHT   = 1005
 
 	// 投票相关错误
-	ERROR_VOTE_NOT_EXIST    = 1006
-	ERROR_STATUS_NOT_EXISIT = 1007
+	ERROR_VOTE_NOT_EXIST     = 1006
+	ERROR_STATUS_NOT_EXISIT  = 1007
+	ERROR_VOTE_OPT_NOT_EXIST = 1008
 )
 
 // 错误码对应的信息
 var codeMsg = map[int]string{
-	SUCCESS:                 "OK",
-	ERROR:                   "FAIL",
-	ERROR_USER_NOT_EXIST:    "用户不存在",
-	ERROR_USERNAME_USED:     "用户已存在",
-	ERROR_PASSWORD_WRONG:    "密码错误",
-	ERROR_TOKEN_NOT_EXIST:   "TOKEN不存在，请重新登录",
-	ERROR_USER_NO_RIGHT:     "用户无权限",
-	ERROR_VOTE_NOT_EXIST:    "投票内容不存在",
-	ERROR_STATUS_NOT_EXISIT: "此状态投票内容不存在",
+	SUCCESS:                  "OK",
+	ERROR:                    "FAIL",
+	ERROR_USER_NOT_EXIST:     "用户不存在",
+	ERROR_USERNAME_USED:      "用户已存在",
+	ERROR_PASSWORD_WRONG:     "密码错误",
+	ERROR_TOKEN_NOT_EXIST:    "TOKEN不存在，请重新登录",
+	ERROR_USER_NO_RIGHT:      "用户无权限",
+	ERROR_VOTE_NOT_EXIST:     "投票内容不存在",
+	ERROR_STATUS_NOT_EXISIT:  "投票内容不存在此状态",
+	ERROR_VOTE_OPT_NOT_EXIST: "投票选线不存在",
 }
 
 func GetErrMsg(code int) string {
 	return codeMsg[code]
 }
-
