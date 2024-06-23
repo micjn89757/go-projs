@@ -1,11 +1,13 @@
 package routes
 
 import (
+	"net/http"
 	"vote-gin/api/v1"
 	"vote-gin/middleware"
 	"vote-gin/model"
 	"vote-gin/utils"
 
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -13,36 +15,53 @@ import (
 var sugar *zap.SugaredLogger
 var err error
 
+func createMyRender() multitemplate.Renderer {
+	p := multitemplate.NewRenderer()
+	p.AddFromFiles("admin", "web/admin/dist/index.html")
+	p.AddFromFiles("front", "web/front/dist/index.html")
+	return p
+}
 
 func InitRouter() {
 	sugar = utils.Logger.Sugar()
 	defer sugar.Sync()
-	defer model.Close()  // 关闭数据库连接
+	defer model.Close() // 关闭数据库连接
 	gin.SetMode(utils.AppMode)
 	// 强制日志颜色化
 	gin.ForceConsoleColor()
 
 	r := gin.New()
-	r.Static("/static", "./static")
-	r.LoadHTMLGlob("templates/*")
 	// 设置信任网络
 	// nil 为不计算，避免性能消耗，上线应当设置
 	_ = r.SetTrustedProxies(nil)
-	
+	r.HTMLRender = createMyRender()
+
+	// 添加中间件
 	r.Use(middleware.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.Cors())
+
+	r.Static("/static", "./web/front/dist/static")
+	r.Static("/admin", "./web/admin/dist")
+	r.StaticFile("/favicon.ico", "/web/front/dist/favicon.ico")
+
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "front", nil)
+	})
+
+	r.GET("/admin", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "admin", nil)
+	})
 	// 后台管理路由接口
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JWTAuthMiddleware())
 	{
+		// 投票
 
 	}
 
 	router := r.Group("api/v1")
 	{
-		// 显示
-		router.GET("", v1.LoginHTML)
 		// 登录控制
 		router.POST("login", v1.Login)
 		router.POST("loginfront", v1.LoginFront)

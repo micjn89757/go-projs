@@ -19,18 +19,18 @@ var sugar *zap.SugaredLogger
 func Login(ctx *gin.Context) {
 	var user model.User
 	var err error
-	var code int 
+	var code int
 	var tokenString string
 
 	err = ctx.ShouldBindBodyWithJSON(&user)
 	if err != nil {
 		sugar.Errorf("get params failed, %s", err.Error())
-		ctx.JSON(http.StatusBadGateway, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status": msgcode.ERROR,
-			"msg": err.Error(), // !有风险，有可能暴漏数据库的一些链接信息
+			"msg":    err.Error(), // !有风险，有可能暴漏数据库的一些链接信息
 		})
 		ctx.Abort()
-		return 
+		return
 	}
 
 	user, code = model.CheckLogin(user.Username, user.Password)
@@ -39,40 +39,39 @@ func Login(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": code,
-			"data": user.Username,
-			"id": user.ID,
-			"msg": msgcode.GetErrMsg(code),
-			"token": tokenString,
+			"data":   user.Username,
+			"id":     user.ID,
+			"msg":    msgcode.GetErrMsg(code),
+			"token":  tokenString,
 		})
 	}
 }
 
 // 前台登录
 func LoginFront(ctx *gin.Context) {
-	var err error 
+	var err error
 	var user model.User
-	var code int 
+	var code int
 
 	err = ctx.ShouldBindBodyWithJSON(&user)
 	if err != nil {
 		sugar.Errorf("get params failed, %s", err.Error())
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"status": msgcode.ERROR,
-			"msg": err.Error(),
+			"msg":    err.Error(),
 		})
 		ctx.Abort()
-		return 
+		return
 	}
 
 	user, code = model.CheckLoginFront(user.Username, user.Password)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": code,
-		"data":	user.Username,
-		"id": user.ID,
-		"msg": msgcode.GetErrMsg(code),
+		"data":   user.Username,
+		"id":     user.ID,
+		"msg":    msgcode.GetErrMsg(code),
 	})
-
 
 }
 
@@ -84,7 +83,7 @@ func setToken(ctx *gin.Context, user model.User) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
-			Issuer: "vote",
+			Issuer:    "vote",
 		},
 	}
 	tokenString, err := j.CreateToken(myClaim)
@@ -92,28 +91,28 @@ func setToken(ctx *gin.Context, user model.User) {
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": msgcode.ERROR,
-			"msg": msgcode.GetErrMsg(msgcode.ERROR),
-			"token": tokenString,
+			"msg":    msgcode.GetErrMsg(msgcode.ERROR),
+			"token":  tokenString,
 		})
 	}
-		
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": msgcode.SUCCESS,
-		"msg": msgcode.GetErrMsg(msgcode.SUCCESS),
-		"data": user.Username,
-		"id": user.ID,
-		"token": tokenString,
+		"msg":    msgcode.GetErrMsg(msgcode.SUCCESS),
+		"data":   user.Username,
+		"id":     user.ID,
+		"token":  tokenString,
 	})
-	return 
+	return
 }
 
 func init() {
 	sugar = utils.Logger.Sugar()
 }
 
-
 func LoginHTML(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "login.html", gin.H{
 		"success": "yes",
 	})
 }
+

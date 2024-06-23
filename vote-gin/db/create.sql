@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS user (
     `created_time` DATETIME NULL DEFAULT NULL,
     `updated_time` DATETIME NULL DEFAULT NULL,
     `deleted_time` DATETIME NULL DEFAULT NULL,
+  │  user.go
     PRIMARY KEY(`id`) USING BTREE
 )ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 -- INSERT INTO user(id, username, password, role, created_time, updated_time, deleted_time) VALUES(0, "admin", "", 1, CURRENT_TIEMSTAMP(), CURRENT_TIEMSTAMP(), NULL);

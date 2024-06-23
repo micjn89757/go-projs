@@ -11,15 +11,15 @@ import (
 )
 
 var db *sqlx.DB
-var err error 
+var err error
 var sugar *zap.SugaredLogger
 
 // 基础结构体
 type Base struct {
-	ID 	uint		`db:"id" json:"id"`
-	CreatedTime	time.Time	`db:"created_time" json:"created_time"`
-	UpdatedTime	time.Time	`db:"updated_time" json:"update_time"`
-	DeletedTime	time.Time	`db:"deleted_time" json:"deleted_time"`
+	ID          uint      `db:"id" json:"id"`
+	CreatedTime time.Time `db:"created_time" json:"created_time"`
+	UpdatedTime time.Time `db:"updated_time" json:"update_time"`
+	DeletedTime time.Time `db:"deleted_time" json:"deleted_time"`
 }
 
 // TODO 更改成单例
@@ -35,8 +35,6 @@ func InitDB() {
 		utils.DBName,
 	)
 
-	
-	fmt.Println(dsn)
 	db, err = sqlx.Open(utils.DB, dsn)
 	if err != nil {
 		sugar.Errorf("参数格式有误:%w\n", err)
