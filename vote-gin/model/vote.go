@@ -44,12 +44,14 @@ func GetVoteInfo(id uint) (Vote, []VoteOpt, int) {
 	var voteOpts []VoteOpt
 
 	// 获取投票
-	sqlStr := "select id, title, type, status, time, user_id from vote where id = ?"
+	sqlStr := "select id, title, type, status, time, user_id, created_time, updated_time from vote where id = ?"
 	err = db.Get(&vote, sqlStr, id)
 
 	if err != nil {
 		return vote, voteOpts, msgcode.ERROR_VOTE_NOT_EXIST
 	}
+
+	//TODO 如果已被删除则不返回
 
 	// 获取对应投票选项
 	voteOpts, err = GetVoteOpts(id)
