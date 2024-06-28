@@ -34,7 +34,32 @@ func AddVote(ctx *gin.Context) {
 	})
 }
 
-// 获取投票
+// AddVoteOpt 添加投票选项
+func AddVoteOpt(ctx *gin.Context) {
+	var err error
+	var code int
+	var voteOpt model.VoteOpt
+
+	err = ctx.ShouldBindJSON(voteOpt)
+	if err != nil {
+		sugar.Infof("add vote opt failed: %s", err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status": msgcode.ERROR,
+			"msg":    msgcode.GetErrMsg(msgcode.ERROR),
+		})
+	}
+
+	_, code = model.CreateVoteOpt(voteOpt)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": code,
+		"msg":    msgcode.GetErrMsg(code),
+		"data":   voteOpt,
+	})
+
+}
+
+// GetVoteInfo 获取投票
 func GetVoteInfo(ctx *gin.Context) {
 	var code int
 	var vote model.Vote
@@ -42,7 +67,7 @@ func GetVoteInfo(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 
 	if err != nil {
-		sugar.Errorf("id atoi failed:%s", err.Error())
+		sugar.Errorf("get vote id failed:%s", err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status": msgcode.ERROR,
 			"msg":    msgcode.GetErrMsg(msgcode.ERROR),

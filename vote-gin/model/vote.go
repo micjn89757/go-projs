@@ -14,7 +14,7 @@ type Vote struct {
 	UserID int    `db:"user_id" json:"user_id"`
 }
 
-// CreateVote 创建投票 TODO 还要创建投票选项
+// CreateVote 创建投票
 func CreateVote(v Vote) int {
 	sqlStr := "insert into vote(title, type, status, time, UserID, created_time, updated_time) values(?, ?, ?, ?, ?, ?, ?)"
 
@@ -76,4 +76,11 @@ func GetVotes(status int, pageSize int, pageNum int) ([]Vote, int, int) {
 	}
 
 	return votes, msgcode.SUCCESS, len(votes)
+}
+
+// EditVote 编辑投票
+func EditVote(id uint, data Vote, optIDs []uint) int {
+	var vote Vote
+	var maps = make(map[string]any)
+	return msgcode.SUCCESS
 }

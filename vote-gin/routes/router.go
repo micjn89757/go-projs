@@ -56,9 +56,11 @@ func InitRouter() {
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JWTAuthMiddleware())
 	{
-
+		// 投票管理
+		auth.POST("vote/opt/add", v1.AddVoteOpt)
 	}
 
+	// 前台管理路由接口
 	router := r.Group("api/v1")
 	{
 		// 登录控制
