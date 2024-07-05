@@ -10,7 +10,7 @@ func Lottery(probs []float64) int {
 	}
 
 	cumProb := 0.0
-	cumProbs := make([]float64, len(probs)) // 累计概率
+	cumProbs := make([]float64, len(probs) + 1) // 累计概率
 
 	for i, prob := range probs {
 		cumProb += prob
