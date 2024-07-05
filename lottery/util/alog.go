@@ -12,9 +12,10 @@ func Lottery(probs []float64) int {
 	cumProb := 0.0
 	cumProbs := make([]float64, len(probs) + 1) // 累计概率
 
+    // 一定注意这里
 	for i, prob := range probs {
-		cumProb += prob
 		cumProbs[i] = cumProb
+		cumProb += prob
 	}
 
 	// 获取一个(0, cumProb] 的随机数
@@ -27,7 +28,6 @@ func Lottery(probs []float64) int {
 
 // BinarySearch 查找>= target的最小元素下标，arr单调递增（不能存在重复元素）
 // 如果target比arr的最后一个元素还大，返回最后一个元素下标
-// TODO: 改进算法
 func BinarySearch(arr []float64, target float64) int {
 	if len(arr) == 0 {
 		return -1
@@ -46,11 +46,12 @@ func BinarySearch(arr []float64, target float64) int {
 			return right
 		}
 
-		// 找到区间
+		// len(arr) == 2
 		if left == right-1 {
 			return right
 		}
 
+		// len(arr) >= 3
 		mid := (left + right) >> 1
 		if target < arr[mid] {
 			right = mid
@@ -61,5 +62,5 @@ func BinarySearch(arr []float64, target float64) int {
 		}
 	}
 
-	return 0
+	return -1
 }

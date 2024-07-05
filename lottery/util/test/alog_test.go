@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"lottery/util"
 	"math/rand"
 	"slices"
@@ -9,7 +10,6 @@ import (
 
 func TestBinarySearch(t *testing.T) {
 	const L = 100
-
 	for c := 0; c < 30; c++ {
 		arr := make([]float64, 0, L)
 		for i := 0; i < L; i++ {
@@ -27,7 +27,7 @@ func TestBinarySearch(t *testing.T) {
 		}
 
 		target = arr[len(arr)-1] + 1.0
-		if util.BinarySearch(arr, target) != 0 {
+		if util.BinarySearch(arr, target) != len(arr) {
 			t.Fail()
 		}
 
@@ -56,7 +56,7 @@ func TestBinarySearch(t *testing.T) {
 
 // 测试按照比例抽奖
 func TestLottery(t *testing.T) {
-	probs := []float64{5, 2, 4}                   // 指定抽中概率
+	probs := []float64{0.2, 0.3, 0.4}                   // 指定抽中概率
 	countMap := make(map[int]float64, len(probs)) // 记录用户抽中奖品个数
 
 	// 模拟10000次抽奖
@@ -66,9 +66,9 @@ func TestLottery(t *testing.T) {
 	}
 
 	// 以下值应当很接近
-	t.Log(countMap[0] / probs[0])
-	t.Log(countMap[1] / probs[1])
-	t.Log(countMap[2] / probs[2])
+	fmt.Println(countMap[0] / probs[0])
+	fmt.Println(countMap[1] / probs[1])
+	fmt.Println(countMap[2] / probs[2])
 }
 
 // go test -v ./util/test -run=^TestBinarySearch$ -count=1
