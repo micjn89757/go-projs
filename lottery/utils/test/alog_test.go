@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"lottery/util"
+	"lottery/utils"
 	"math/rand"
 	"slices"
 	"testing"
@@ -22,31 +22,31 @@ func TestBinarySearch(t *testing.T) {
 
 		// 测试两个越界情况
 		target = arr[0] - 1.0
-		if util.BinarySearch(arr, target) != 0 {
+		if utils.BinarySearch(arr, target) != 0 {
 			t.Fail()
 		}
 
 		target = arr[len(arr)-1] + 1.0
-		if util.BinarySearch(arr, target) != len(arr) {
+		if utils.BinarySearch(arr, target) != len(arr) {
 			t.Fail()
 		}
 
 		// 每个分割点以及2个分割点中间的值都要测试
 		target = arr[0]
-		if util.BinarySearch(arr, target) != 0 {
+		if utils.BinarySearch(arr, target) != 0 {
 			t.Fail()
 		}
 
 		for i := 0; i < len(arr)-1; i++ {
 			target = (arr[i] + arr[i+1]) / 2
 
-			if util.BinarySearch(arr, target) != i+1 {
+			if utils.BinarySearch(arr, target) != i+1 {
 				t.Fail()
 			}
 
 			target = arr[i+1]
 
-			if util.BinarySearch(arr, target) != i+1 {
+			if utils.BinarySearch(arr, target) != i+1 {
 				t.Fail()
 			}
 		}
@@ -61,7 +61,7 @@ func TestLottery(t *testing.T) {
 
 	// 模拟10000次抽奖
 	for i := 0; i < 10000; i++ {
-		index := util.Lottery(probs)
+		index := utils.Lottery(probs)
 		countMap[index] += 1
 	}
 
