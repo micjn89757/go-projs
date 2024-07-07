@@ -3,12 +3,12 @@ module lottery
 go 1.22.4
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/gin-gonic/gin v1.10.0
 	gorm.io/gorm v1.25.10
 )
 
 require (
-	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

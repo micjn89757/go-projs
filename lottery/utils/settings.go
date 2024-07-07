@@ -21,10 +21,11 @@ type Server struct {
 	JwtKey   string `toml:"jwt_key"`
 }
 
+var Conf Config
+
 // 初始化配置
 func init() {
-	var config Config
-	_, err := toml.DecodeFile("./config/config.toml", &config)
+	_, err := toml.DecodeFile("./config/config.toml", &Conf)
 
 
 	if err != nil {
