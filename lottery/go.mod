@@ -5,6 +5,7 @@ go 1.22.4
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/gin-gonic/gin v1.10.0
+	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.10
 )
 
@@ -39,5 +40,4 @@ require (
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/mysql v1.5.7 // indirect
 )
