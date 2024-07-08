@@ -16,32 +16,33 @@ func InitRoute() {
 	// err := r.SetTrustedProxies()
 
 	// 设置静态文件目录
-	r.Static("/static", "./view/static")	
-	r.LoadHTMLFiles("/front", "./view/**/*.html") // 应该是index.html
+	r.Static("/img", "./view/img")	
+	r.Static("/js", "./view/js")
+	r.LoadHTMLFiles("view/lottery.html") // 应该是index.html
 
 
 	r.GET("/", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "front", nil)
+		ctx.HTML(http.StatusOK, "lottery.html", nil)
 	})
 
-
-	/*
-		后台管理接口
-	*/
-	// auth := r.Group("api/v1")
-
-
-	/*
-		前端展示页面接口
-	*/
 
 	front := r.Group("api/v1")
-	front.POST("/", func(ctx *gin.Context) {
+	{
+		front.GET("/gifts", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": errmsg.SUCCESS,
-			"msg": "ok",
+			"msg": "gifts",
+		})
+
+		front.GET("/lucky", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, gin.H{
+				"status": errmsg.SUCCESS,
+				"msg": "lucky",
+			})
 		})
 	})
+	}
+	
 
 
 	err := r.Run(utils.Conf.Server.HttpPort)
