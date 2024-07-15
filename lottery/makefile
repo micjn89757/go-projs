@@ -1,5 +1,4 @@
-.PHONY all build run gotool clean help
-
+.PHONY:all build run gotool clean help.
 
 BINARY="main"
 
@@ -7,10 +6,10 @@ all:
 	gotool build
 
 build:
-	GOOS=linux GOARCH=amd64 go build -o ${BINARY}
+	GOOS=windows GOARCH=amd64 go build -o ${BINARY}
 
 run: 
-	go run ./ 
+	@go run ./ 
 
 gotool:
 	go fmt ./ 

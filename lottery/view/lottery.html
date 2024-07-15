@@ -23,8 +23,10 @@
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
-                url: "/gifts",
-                success: function (gifts) {
+                url: "api/v1/gifts",
+                success: function (data) {
+                    console.log(data)
+                    let gifts = data["data"]
                     var prizes=new Array();
                     $.each(gifts,function(index,gift){
                         giftMap[gift.Id]=index;
@@ -48,7 +50,7 @@
                         start: function() {
                             $.ajax({
                                 type: "GET",
-                                url: "/lucky",
+                                url: "api/v1/lucky",
                                 success: function (giftId) {
                                     if(giftId=="0"){
                                         alert("抽奖结束")

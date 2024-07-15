@@ -5,6 +5,7 @@ import "github.com/BurntSushi/toml"
 type Config struct {
 	Mysql  *Mysql `toml:"mysql"`
 	Server *Server `toml:"server"`
+	Redis *Redis `toml:"redis"`
 }
 
 type Mysql struct {
@@ -13,6 +14,11 @@ type Mysql struct {
 	DBUser     string `toml:"db_user"`
 	DBPassword string `toml:"db_password"`
 	DBName     string `toml:"db_name"`
+}
+
+type Redis struct {
+	Addr		string `toml:"addr"`
+	DB			int `toml:"db"`
 }
 
 type Server struct {

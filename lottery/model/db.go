@@ -7,18 +7,27 @@ import (
 	"sync"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
 
 var (
-	LotteryDB *gorm.DB
+	lotteryDB *gorm.DB
 	lotteryDBOnce sync.Once 
+
+
+	lotteryRedis *redis.Client
+	lotteryRedisOnce sync.Once
+	
 )
 
 func InitDB() {
 	getLotteryDBConnection()
+	
+	// 将Mysql中的库存同步到redis
+	InitInventory()
 }
 
 
@@ -47,6 +56,7 @@ func createMysqlDB() *gorm.DB {
 	})
 
 
+	// TODO： 换成日志
 	if err != nil {
 		fmt.Printf("connect mysql failed: %s", err.Error())
 		os.Exit(1)
@@ -75,8 +85,35 @@ func createMysqlDB() *gorm.DB {
 // 单例
 func getLotteryDBConnection() {
 	lotteryDBOnce.Do(func ()  {
-		if LotteryDB == nil {
-			LotteryDB = createMysqlDB()
+		if lotteryDB == nil {
+			lotteryDB = createMysqlDB()
+		}
+	})
+}
+
+
+func createRedisClient(addr, passwd string, db int) *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr: addr,
+		Password: passwd,
+		DB:	db,
+	})
+
+
+	if err := client.Ping().Err(); err != nil {
+		panic("connect to redis failed")
+	} else {
+		fmt.Printf("connect to redis %d", db)
+	}
+
+	return client
+}
+
+
+func GetRedisClient() *redis.Client {
+	lotteryRedisOnce.Do(func ()  {
+		if lotteryRedis == nil {
+			lotteryRedis = createRedisClient(utils.Conf.Redis.Addr, "", utils.Conf.Redis.DB)
 		}
 	})
 }
