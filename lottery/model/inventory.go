@@ -1,10 +1,12 @@
 package model
 
 import (
+	"context"
 	"lottery/utils"
 	"lottery/utils/errmsg"
+	"strconv"
 
-	"gorm.io/gorm"
+	"go.uber.org/zap"
 )
 
 const (
@@ -12,7 +14,7 @@ const (
 )
 
 type Inventory struct {
-	*gorm.Model
+	ID 			uint 	`gorm:"column:id"`
 	Name 		string 	`gorm:"column:name"`
 	Description string  `gorm:"column:description"`
 	Picture 	string 	`gorm:"column:picture"`
@@ -31,8 +33,30 @@ func InitInventory() {
 
 // GetAllInventoryCount 获取所有奖品的剩余库存量，返回的结果只包含id和count
 func GetAllInventoryCount() []*Inventory {
-	// redis key是prefix+id， value是count
-	return nil
+	ctx := context.Background()
+	// redis key是prefix+id，value是count
+	keys, err := lotteryRedis.Keys(ctx, prefix + "*").Result() // 根据前缀获取所有奖品的Key
+	if err != nil {
+		utils.Logger.Error("iterate all keys by prefix failed", zap.String("prefix", prefix), zap.String("err", err.Error()))
+		return nil 
+	}
+
+	inventories := make([]*Inventory, 0, len(keys))
+	for _, key := range keys { // 根据奖品Key获得奖品的库存count
+		if id, err := strconv.Atoi(key[len(prefix):]); err != nil {
+			utils.Logger.Error("invalid redis key", zap.String("key", key))
+		} else {
+			count, err := lotteryRedis.Get(ctx, key).Int() // 根据key从redis中获取库存
+			if err != nil {
+				utils.Logger.Error("invalid inventory", zap.String("errmsg", err.Error()))
+			}
+
+			inventories = append(inventories, &Inventory{ID: uint(id), Count: count})
+		}
+
+	}
+
+	return inventories
 }
 
 // GetAllInventoryV1 读取全部数据
@@ -51,16 +75,65 @@ func GetAllInventoryV1() ([]*Inventory, int, int64) {
 }
 
 
-// 千万级以上大表遍历方案，简单说每次读取一小份，将这一小份放到channel，另一个Goroutine从channel里读
-func GetAllInventoryV2(ch chan <- Inventory) {}
+// !GetAllInventoryV2 获取全部数据，千万级以上大表遍历方案，简单说每次读取一小份，将这一小份放到channel，另一个Goroutine从channel里读
+func GetAllInventoryV2(ch chan <- Inventory) { // 只发送通道
+	const pageSize = 500	// 一次读取500条
+	maxid := 0 
+	for {
+		var inventoryList []Inventory
+		err := lotteryDB.Select([]string{"id", "name", "description", "picture", "price", "count"}).Limit(pageSize).Find(&inventoryList).Error
 
-// AddInventory
-func AddInventory(InvId int) int {
-	return 0
+		if err != nil {
+			utils.Logger.Error("get inventory data failed", zap.String("errmsg", err.Error()))
+			break
+		}
+
+		if len(inventoryList) == 0 {	
+			break
+		}
+
+		for _, inv := range inventoryList {
+			if inv.ID > uint(maxid) {
+				maxid = int(inv.ID)
+			}
+
+			ch <- inv
+		}
+	}
+
+	close(ch)
+}
+
+// AddInventory	奖品库存+1
+func AddInventory(invId uint) int {
+	ctx := context.Background()
+	key := prefix + strconv.Itoa(int(invId))
+
+	_, err := lotteryRedis.Incr(ctx, key).Result()
+	if err != nil {
+		utils.Logger.Error("incr key failed", zap.String("key", key))
+		return errmsg.ERROR
+	}
+
+	return errmsg.SUCCESS
 }
 
 
 // DeleteInventory 
-func DeleteInventory(InvId int) int {
-	return 0
+func DeleteInventory(invId uint) int {
+	ctx := context.Background()
+	n, err := lotteryRedis.Decr(ctx, prefix + strconv.Itoa(int(invId))).Result()	// 返回删除后的库存
+
+	if err != nil {
+		utils.Logger.Error("delete inventory failed", zap.String("errmsg", err.Error()))
+
+		return errmsg.ERROR
+	}
+
+	if n < 0 {
+		utils.Logger.Error("the count of inventory is empty, operation failed", zap.Uint("id", invId))
+		return errmsg.ERROR
+	}
+
+	return errmsg.SUCCESS
 }

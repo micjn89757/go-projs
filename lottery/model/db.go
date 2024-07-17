@@ -27,6 +27,7 @@ var (
 
 func InitDB() {
 	getLotteryDBConnection()
+	getRedisClient()
 	
 	// 将Mysql中的库存同步到redis
 	InitInventory()
@@ -101,16 +102,16 @@ func createRedisClient(addr, passwd string, db int) *redis.Client {
 
 
 	if err := client.Ping(context.Background()).Err(); err != nil {
-		panic("connect to redis failed")
+		utils.Logger.Fatal("connect to redis failed", zap.String("err", err.Error()))
 	} else {
-		fmt.Printf("connect to redis %d", db)
+		utils.Logger.Info("connect to redis", zap.Int("db", db))
 	}
 
 	return client
 }
 
 
-func GetRedisClient()  {
+func getRedisClient()  {
 	lotteryRedisOnce.Do(func ()  {
 		if lotteryRedis == nil {
 			lotteryRedis = createRedisClient(utils.Conf.Redis.Addr, "", utils.Conf.Redis.DB)
