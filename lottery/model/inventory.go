@@ -50,7 +50,7 @@ func GetAllInventoryCount() []*Inventory {
 			if err != nil {
 				utils.Logger.Error("invalid inventory", zap.String("errmsg", err.Error()))
 			}
-
+			utils.Logger.Info("count", zap.Int("count", count))
 			inventories = append(inventories, &Inventory{ID: uint(id), Count: count})
 		}
 
