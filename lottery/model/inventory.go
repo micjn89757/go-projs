@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"lottery/utils"
 	"lottery/utils/errmsg"
 
 	"gorm.io/gorm"
@@ -41,7 +41,7 @@ func GetAllInventoryV1() ([]*Inventory, int, int64) {
 	var total int64
 	err := lotteryDB.Select([]string{"id", "name", "description", "picture", "price", "count"}).Find(&inventoryList).Error
 	if err != nil {
-		fmt.Println("read table failed")
+		utils.Logger.Info("read table failed")
 		return inventoryList, errmsg.ERROR_GIFTS_NOT_EXIST, 0
 	}
 

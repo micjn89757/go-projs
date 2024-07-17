@@ -17,10 +17,13 @@ func InitRoute() {
 	// err := r.SetTrustedProxies()
 
 	// 设置中间件
+	r.Use(middleware.GinLogger(utils.Logger))
 	r.Use(middleware.Cors())
+	r.Use(gin.Recovery())
 	// 设置静态文件目录
 	r.Static("/img", "./view/img")	
 	r.Static("/js", "./view/js")
+	r.StaticFile("./favicon.ico", "views/img/dqq.png")
 	r.LoadHTMLFiles("view/lottery.html") // 应该是index.html
 
 

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"lottery/utils"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -31,7 +33,6 @@ func InitDB() {
 }
 
 
-// TODO: 使用日志
 func createMysqlDB() *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", 
 		utils.Conf.Mysql.DBUser,
@@ -56,9 +57,8 @@ func createMysqlDB() *gorm.DB {
 	})
 
 
-	// TODO： 换成日志
 	if err != nil {
-		fmt.Printf("connect mysql failed: %s", err.Error())
+		utils.Logger.Error("connect mysql failed", zap.String("errmsg", err.Error()))
 		os.Exit(1)
 	}
 
@@ -66,7 +66,7 @@ func createMysqlDB() *gorm.DB {
 	// 设置连接池
 	sqlDB, err := db.DB()
 	if err != nil {
-		fmt.Printf("init connection pool failed: %s", err.Error())
+		utils.Logger.Error("get connection pool failed: %s", zap.String("errmsg", err.Error()))
 		os.Exit(1)
 	}
 
@@ -100,7 +100,7 @@ func createRedisClient(addr, passwd string, db int) *redis.Client {
 	})
 
 
-	if err := client.Ping().Err(); err != nil {
+	if err := client.Ping(context.Background()).Err(); err != nil {
 		panic("connect to redis failed")
 	} else {
 		fmt.Printf("connect to redis %d", db)
@@ -110,7 +110,7 @@ func createRedisClient(addr, passwd string, db int) *redis.Client {
 }
 
 
-func GetRedisClient() *redis.Client {
+func GetRedisClient()  {
 	lotteryRedisOnce.Do(func ()  {
 		if lotteryRedis == nil {
 			lotteryRedis = createRedisClient(utils.Conf.Redis.Addr, "", utils.Conf.Redis.DB)
