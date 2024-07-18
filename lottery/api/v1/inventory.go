@@ -46,6 +46,7 @@ func Lottery(ctx *gin.Context) {
 
 		// 3. 如果所有奖品都被抽空了，则返回"0"，表示奖品抽完
 		if len(ids) == 0 {
+			// !这里不能直接 close管道因为如果对一个已经关闭的管道close会报错，并且并发场景下是会存在这种情况的
 			model.CloseChannel() // 关闭orderCh
 			// TODO: errmsg
 			ctx.String(http.StatusOK, strconv.Itoa(0)) // 0 表示所有奖品已经抽完
@@ -58,8 +59,7 @@ func Lottery(ctx *gin.Context) {
 		// 减少库存
 		// 5. 减redis的库存(注意并发问题，不过redis的decr是并发安全的)，有可能返回负数（并发减库存），但是不会返回抽奖失败，而是尝试10次，有一次成功就返回，如果10次都抽不到，就返回失败，1
 		code := model.DeleteInventory(invId)
-
-		if code == 200 {
+		if code == 500 {
 			continue // 减库存失败，重试
 		}
 
@@ -67,8 +67,13 @@ func Lottery(ctx *gin.Context) {
 		model.PutOrder(1, invId) // 订单信息写入channel
 
 		ctx.String(http.StatusOK, strconv.Itoa(int(invId)))
+
 		// 抽奖算法是个概率问题，但是10次都不成功是小概率时间，但是不能为了特别小的概率时间做太多处理
 		return 
 	}
-	ctx.String(http.StatusOK, strconv.Itoa(1)) //如果10次之后还失败，则返回“谢谢参与”
+ 	//如果10次之后还失败，则返回“谢谢参与”
+	ctx.JSON(http.StatusOK, gin.H{
+		"msg": "谢谢参与",
+		"data": strconv.Itoa(1),
+	})
 }

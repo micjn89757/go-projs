@@ -11,6 +11,7 @@ import (
 
 const (
 	prefix = "gift_count_" // 设置redis的key统一前缀，方便按前缀遍历key
+	EMPTY_GIFT = 1	// 空奖品，谢谢参与
 )
 
 type Inventory struct {
@@ -28,7 +29,24 @@ func (Inventory) TableName() string {
 
 // TODO: InitGiftInventory 从mysql读出所有奖品的初始库存，存入redis。如果同时有很多用户参与抽奖，不能发去Mysql里减库存，Mysql扛不住这么高的并发，Redis可以
 func InitInventory() {
+	ctx := context.Background()
+	inventoryCh := make(chan Inventory, 100)
+	go GetAllInventoryV2(inventoryCh)
+	for {
+		inv, ok := <-inventoryCh
+		if !ok {	// 消费完
+			break
+		}
 
+		if inv.Count <= 0 {
+			continue // 没有库存的商品不参与抽奖
+		}
+
+		err := lotteryRedis.Set(ctx, prefix+strconv.Itoa(int(inv.ID)), inv.Count, 0).Err() // 0表示不设置过期时间
+		if err != nil {
+			utils.Logger.Fatal("set inv failed", zap.Uint("inv", inv.ID))
+		}
+	}
 }
 
 // GetAllInventoryCount 获取所有奖品的剩余库存量，返回的结果只包含id和count
@@ -50,7 +68,6 @@ func GetAllInventoryCount() []*Inventory {
 			if err != nil {
 				utils.Logger.Error("invalid inventory", zap.String("errmsg", err.Error()))
 			}
-			utils.Logger.Info("count", zap.Int("count", count))
 			inventories = append(inventories, &Inventory{ID: uint(id), Count: count})
 		}
 
@@ -81,7 +98,7 @@ func GetAllInventoryV2(ch chan <- Inventory) { // 只发送通道
 	maxid := 0 
 	for {
 		var inventoryList []Inventory
-		err := lotteryDB.Select([]string{"id", "name", "description", "picture", "price", "count"}).Limit(pageSize).Find(&inventoryList).Error
+		err := lotteryDB.Select([]string{"id", "name", "description", "picture", "price", "count"}).Where("id>?", maxid).Limit(pageSize).Find(&inventoryList).Error	// 用maxid控制每一次读的起始位置
 
 		if err != nil {
 			utils.Logger.Error("get inventory data failed", zap.String("errmsg", err.Error()))

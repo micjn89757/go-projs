@@ -29,8 +29,7 @@ func InitDB() {
 	getLotteryDBConnection()
 	getRedisClient()
 	
-	// 将Mysql中的库存同步到redis
-	InitInventory()
+
 }
 
 

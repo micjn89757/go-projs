@@ -2,7 +2,7 @@ package utils
 
 import "math/rand"
 
-// Lottery 给定每个奖品被抽中的概率(无需做归一化，但是概率必须大于0)，返回被抽中的奖品下标
+// !Lottery 给定每个奖品被抽中的概率(无需做归一化，但是概率必须大于0)，返回被抽中的奖品下标
 func Lottery(probs []float64) int {
 	// 空处理
 	if len(probs) == 0 {
@@ -10,12 +10,12 @@ func Lottery(probs []float64) int {
 	}
 
 	cumProb := 0.0
-	cumProbs := make([]float64, len(probs) + 1) // 累计概率
+	cumProbs := make([]float64, len(probs)) // 累计概率
 
     // 一定注意这里
 	for i, prob := range probs {
-		cumProbs[i] = cumProb
 		cumProb += prob
+		cumProbs[i] = cumProb
 	}
 
 	// 获取一个(0, cumProb] 的随机数
@@ -52,7 +52,7 @@ func BinarySearch(arr []float64, target float64) int {
 		}
 
 		// len(arr) >= 3
-		mid := (left + right) >> 1
+		mid := (left + right) / 2
 		if target < arr[mid] {
 			right = mid
 		} else if target == arr[mid] {
