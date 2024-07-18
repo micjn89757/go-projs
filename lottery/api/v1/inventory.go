@@ -71,7 +71,7 @@ func Lottery(ctx *gin.Context) {
 		// 抽奖算法是个概率问题，但是10次都不成功是小概率时间，但是不能为了特别小的概率时间做太多处理
 		return 
 	}
- 	//如果10次之后还失败，则返回“谢谢参与”
+ 	//如果10次之后还失败，则返回谢谢参与
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg": "谢谢参与",
 		"data": strconv.Itoa(1),

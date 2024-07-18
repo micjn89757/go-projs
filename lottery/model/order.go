@@ -21,6 +21,8 @@ var (
 	writeOrderFinish = false 	// true表示所有订单已经持久化到数据库中了
 )
 
+
+// 保证channel里面的数据都持久化到数据库
 func listenSingal() {
 	c := make(chan os.Signal, 1)  // os.Signal可以容纳各种操作系统级别的信号
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM) // 注册信号2和15，收到任意一种信号就会发送到chan里。Ctrl+c对应SIGINT信号
@@ -37,8 +39,6 @@ func listenSingal() {
 }
 
 func init() {
-	// 将Mysql中的库存同步到redis
-	InitInventory()
 	InitChannel()
 
 	go func() {
@@ -84,7 +84,7 @@ func CreateOrder(userId, inventoryId uint) int {
 		utils.Logger.Error("create order failed", zap.String("errmsg", err.Error()))
 		return 0
 	} else {
-		utils.Logger.Error("create order", zap.Uint("id", order.ID))
+		utils.Logger.Info("create order", zap.Uint("id", order.ID))
 		return int(order.ID)
 	}
 }

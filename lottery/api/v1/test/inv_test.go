@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-const url = "http://localhost:3001/lucky"
-const P = 100 //模拟100个用户，在疯狂地点击“抽奖”
+const url = "http://localhost:3000/api/v1/lucky"
+const P = 100 //模拟100个用户，在疯狂地点击抽奖
 
 func TestLottery1(t *testing.T) {
 	hitMap := sync.Map{}
@@ -43,6 +43,8 @@ func TestLottery1(t *testing.T) {
 				if giftId == "0" { //如果返回的奖品ID为0，说明已抽完
 					break
 				}
+
+				// 这里会有计数问题
 				if cnt, exists := hitMap.Load(giftId); exists {
 					hitMap.Store(giftId, cnt.(int)+1) //多个协程同时执行？计数被覆盖，会比实际的小
 				} else {
