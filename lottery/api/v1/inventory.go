@@ -47,7 +47,8 @@ func Lottery(ctx *gin.Context) {
 		// 3. 如果所有奖品都被抽空了，则返回"0"，表示奖品抽完
 		if len(ids) == 0 {
 			// !这里不能直接 close管道因为如果对一个已经关闭的管道close会报错，并且并发场景下是会存在这种情况的
-			model.CloseChannel() // 关闭orderCh
+			// model.CloseChannel() // 关闭orderCh
+			go model.CloseMQ()	// 关闭写mq的连接
 			// TODO: errmsg
 			ctx.String(http.StatusOK, strconv.Itoa(0)) // 0 表示所有奖品已经抽完
 			return
@@ -64,7 +65,8 @@ func Lottery(ctx *gin.Context) {
 		}
 
 		// !用户ID写死1
-		model.PutOrder(1, invId) // 订单信息写入channel
+		// model.PutOrder(1, invId) // 订单信息写入channel
+		model.ProduceOrder(1, invId)	// 写入mq
 
 		ctx.String(http.StatusOK, strconv.Itoa(int(invId)))
 

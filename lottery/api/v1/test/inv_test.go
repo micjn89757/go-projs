@@ -129,7 +129,7 @@ func TestLottery2(t *testing.T) {
 	if totalTime > 0 && totalCall > 0 {
 		qps := totalCall / totalTime
 		avgTime := totalUseTime / totalCall
-		fmt.Printf("QPS %d, avg time %dms\n", qps, avgTime) //QPS 5600, avg time 31ms
+		fmt.Printf("QPS %d, avg time %dms\n", qps, avgTime) //QPS 5600, avg time 31ms，这个qps还是不够看的
 
 		total := 0
 		for giftId, count := range hitMap {
