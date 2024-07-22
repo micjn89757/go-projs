@@ -2,7 +2,6 @@ package world
 
 import "mmorpg/manager"
 
-
 // 统一管理服务
 type MgrMgr struct {
 	Pm manager.PlayerMgr

@@ -1,5 +1,6 @@
 package player
 
+import "mmorpg/define"
 
 type Player struct {
 	UId        		uint64
