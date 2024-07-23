@@ -15,3 +15,7 @@ func NewMgrMgr() *MgrMgr {
 
 
 var MM *MgrMgr
+
+func (mm *MgrMgr) name() {
+	
+}

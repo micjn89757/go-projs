@@ -10,13 +10,15 @@ import (
 // 会话管理
 // 多个客户端可以建立多个会话
 type Session struct {
-	conn net.Conn
-	packer *NormalPacker
+	UId		int64 	// 对session进行标识
+	Conn 	net.Conn
+	packer 	IPacker
 	writeCh	chan *Message
+	IsClose	bool
 }
 
 func NewSession(conn net.Conn) *Session {
-	return &Session{conn: conn, packer: NewNormalPack(binary.BigEndian), writeCh: make(chan *Message, 1)}
+	return &Session{Conn: conn, packer: &NormalPacker{binary.BigEndian}, writeCh: make(chan *Message, 1)}
 }
 
 
@@ -27,16 +29,16 @@ func (s *Session) Run() {
 
 // Read 读取客户端消息
 func (s *Session) Read() {
-	// 设置读超时时间
-	err := s.conn.SetReadDeadline(time.Now().Add(time.Second))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for {
-		msg, err := s.packer.Unpack(s.conn)
+	for {	
+		// 设置读超时时间
+		err := s.Conn.SetReadDeadline(time.Now().Add(time.Second))
 		if err != nil {
 			fmt.Println(err)
+			continue
+		}
+		msg, err := s.packer.Unpack(s.Conn)
+		if _, ok := err.(net.Error); ok {
+			continue
 		}
 
 		// TODO: 序列化成需要的格式
@@ -54,27 +56,28 @@ func (s *Session) Read() {
 
 // Write 向客户端返回消息
 func (s *Session) Write() {
-	err := s.conn.SetWriteDeadline(time.Now().Add(time.Second))
-	if err != nil {
-		fmt.Println(err)
-	}
-
 	for {
 		select {
-		case msg := <- s.writeCh:
-			s.send(msg)
+		case resp := <- s.writeCh:
+			s.send(resp)
 		}
 	}
 }
 
 func (s *Session) send(message *Message) {
+	err := s.Conn.SetWriteDeadline(time.Now().Add(time.Second))
+	if err != nil {
+		fmt.Println(err)
+		return 
+	}
 	bytes, err := s.packer.Pack(message)
 
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	_, err = s.conn.Write(bytes)
+	_, err = s.Conn.Write(bytes)
 
 	if err != nil {
 		fmt.Println(err)
