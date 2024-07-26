@@ -38,7 +38,7 @@ func (p *NormalPacker) Unpack(reader io.Reader) (*Message, error) {
 	}
 
 	buffer := make([]byte, 8+8) // 只获取长度和id
-	_, err = io.ReadFull(reader, buffer)
+	_, err = io.ReadFull(reader, buffer)	// 已经将数据读出
 	if err != nil {
 		return nil, err
 	}

@@ -83,7 +83,7 @@ func TakeOrder() {
 }
 
 
-// CreateOrder 创建订单，写入myql
+// CreateOrder 创建订单，写入mysql
 func CreateOrder(userId, inventoryId uint) int {
 	order := Order{GiftId: inventoryId, UserId: userId}
 	if err := lotteryDB.Create(&order).Error; err != nil {

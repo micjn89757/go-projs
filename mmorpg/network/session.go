@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// 会话管理
 // 多个客户端可以建立多个会话
 type Session struct {
 	UId		int64 	// 对session进行标识
