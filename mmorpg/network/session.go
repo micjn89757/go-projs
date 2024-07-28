@@ -9,15 +9,17 @@ import (
 
 // 多个客户端可以建立多个会话
 type Session struct {
-	UId		int64 	// 对session进行标识
-	Conn 	net.Conn
-	packer 	IPacker
-	writeCh	chan *Message
-	IsClose	bool
-}
+	UId				uint64 	// 对session进行标识
+	Conn 			net.Conn
+	packer 			IPacker
+	WriteCh			chan *Message
+	IsClose			bool
+	IsPlayerOnline	bool
+	MessageHandler 	func(packet *SessionPacket)	// 处理Session消息
+}	
 
 func NewSession(conn net.Conn) *Session {
-	return &Session{Conn: conn, packer: &NormalPacker{binary.BigEndian}, writeCh: make(chan *Message, 1)}
+	return &Session{Conn: conn, packer: &NormalPacker{binary.BigEndian}, WriteCh: make(chan *Message, 1)}
 }
 
 
@@ -40,29 +42,28 @@ func (s *Session) Read() {
 			continue
 		}
 
-		// TODO: 序列化成需要的格式
 		fmt.Println("server receive message: ", string(msg.Data))
-
-		// TODO:
-		s.writeCh <- &Message{ // 回复
-			Id: 999,
-			Data: []byte("hi calvin"),
-		}
+		s.MessageHandler(&SessionPacket{
+			Msg: msg,
+			Sess: s,
+		})
+		
 	}
 	
 }
 
 
-// Write 向客户端返回消息
+// Write 从写管道中接收消息，使用send编码发送到客户端
 func (s *Session) Write() {
 	for {
 		select {
-		case resp := <- s.writeCh:
+		case resp := <- s.WriteCh:
 			s.send(resp)
 		}
 	}
 }
 
+// send 将消息编码发送到客户端
 func (s *Session) send(message *Message) {
 	err := s.Conn.SetWriteDeadline(time.Now().Add(time.Second))
 	if err != nil {
@@ -81,4 +82,9 @@ func (s *Session) send(message *Message) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+// SendMsg 向写管道中写入消息
+func (s *Session) SendMsg(msg *Message) {
+	s.WriteCh <- msg
 }

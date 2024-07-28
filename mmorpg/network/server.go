@@ -5,7 +5,8 @@ import (
 )
 
 type Server struct {
-	Listener 	net.Listener
+	tcpListener 	net.Listener
+	OnSessionPacket	func(packet *SessionPacket)
 }
 
 
@@ -25,7 +26,7 @@ func NewServer(address string) *Server {
 	}
 
 	s := &Server{}
-	s.Listener = tcpListener
+	s.tcpListener = tcpListener
 	return s
 }
 
@@ -33,9 +34,9 @@ func NewServer(address string) *Server {
 func (s *Server) Run() {
 
 	for {	// 持续等待客户端连接
-		conn, err := s.Listener.Accept()
+		conn, err := s.tcpListener.Accept()
 		if err != nil {
-			if _, ok := err.(net.Error); ok {
+			if err := err.(net.Error); err != nil {
 				continue
 			}
 		}

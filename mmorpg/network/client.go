@@ -8,9 +8,10 @@ import (
 )
 
 type Client struct {
-	Addr   	string
-	packer 	IPacker
-	msgCh	chan *Message
+	Addr   		string
+	packer 		IPacker
+	MsgCh		chan *Message
+	OnMessage	func(message *ClientPacket)
 }
 
 func NewClient(address string) *Client {
@@ -19,7 +20,7 @@ func NewClient(address string) *Client {
 		packer: &NormalPacker{
 			ByteOrder: binary.BigEndian,
 		},
-		msgCh: make(chan *Message, 1),
+		MsgCh: make(chan *Message, 1),
 	}
 }
 
@@ -42,17 +43,12 @@ func (c *Client) Write(conn net.Conn) {
 	for {
 		select {
 		case <- tick.C:
-			c.msgCh <- &Message{
+			c.MsgCh <- &Message{
 				Id: 111,
 				Data: []byte("hello world"),
 			}
-		case msg := <- c.msgCh:
+		case msg := <- c.MsgCh:
 			c.send(conn, msg)
-		// case <- tick.C:
-		// 	c.send(conn, &Message{
-		// 		Id:	111,
-		// 		Data: []byte("hello world"),
-		// 	})
 		}
 
 	}
@@ -82,6 +78,11 @@ func (c *Client) Read(conn net.Conn) {
 			fmt.Println(err)
 			continue
 		}
+
+		c.OnMessage(&ClientPacket{
+			Msg: msg,
+			Conn: conn,
+		})
 
 		fmt.Println("resp message: ", string(msg.Data))
 	}

@@ -1,6 +1,11 @@
+/*
+统一管理所有Session
+*/
+
 package network
 
 import "sync"
+
 
 type SessionMgr struct {
 	Sessions 	map[int64]*Session

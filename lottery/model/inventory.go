@@ -27,7 +27,7 @@ func (Inventory) TableName() string {
 	return "inventory"
 }
 
-// TODO: InitGiftInventory 从mysql读出所有奖品的初始库存，存入redis。如果同时有很多用户参与抽奖，不能发去Mysql里减库存，Mysql扛不住这么高的并发，Redis可以
+// InitGiftInventory 从mysql读出所有奖品的初始库存，存入redis。如果同时有很多用户参与抽奖，不能发去Mysql里减库存，Mysql扛不住这么高的并发，Redis可以
 func InitInventory() {
 	ctx := context.Background()
 	inventoryCh := make(chan Inventory, 100)
@@ -136,7 +136,7 @@ func AddInventory(invId uint) int {
 }
 
 
-// DeleteInventory 
+// DeleteInventory 奖品库存-1
 func DeleteInventory(invId uint) int {
 	ctx := context.Background()
 	n, err := lotteryRedis.Decr(ctx, prefix + strconv.Itoa(int(invId))).Result()	// 返回删除后的库存
