@@ -1,7 +1,7 @@
 package common
 
-// ChechInNumberSlice 检查slice中是否含有元素target
-func CheckInNumberSlice[T comparable](target T, arr []T) bool {
+// ChechInSlice 检查slice中是否含有元素target
+func CheckInSlice[T comparable](target T, arr []T) bool {
 	for _, val := range arr {
 		if target == val {
 			return true

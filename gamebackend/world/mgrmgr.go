@@ -13,8 +13,8 @@ import (
 
 // 世界管理服务
 type MgrMgr struct {
-	Pm              *manager.PlayerMgr // 玩家管理
-	Server          *network.Server    // 统一管理服务器
+	Pm              *manager.PlayerMgr // 玩家管理服务
+	Server          *network.Server    
 	Handlers        map[messageId.MessageId]func(message *network.SessionPacket)
 	chSessionPacket chan *network.SessionPacket
 }
@@ -23,12 +23,15 @@ func NewMgrMgr() *MgrMgr {
 	m := &MgrMgr{Pm: &manager.PlayerMgr{}}
 	m.Server = network.NewServer(":8023")
 	m.Server.OnSessionPacket = m.OnSessionPacket
+	m.Handlers = make(map[messageId.MessageId]func(message *network.SessionPacket))
+
 	return m
 }
 
 var MM *MgrMgr
 
 func (mm *MgrMgr) Run() {
+	mm.HandlerRegister()	// 注册handler
 	go mm.Server.Run() // 世界管理服务
 	go mm.Pm.Run()     // 玩家管理服务
 }
@@ -36,6 +39,7 @@ func (mm *MgrMgr) Run() {
 func (mm *MgrMgr) OnSessionPacket(packet *network.SessionPacket) {
 	if handler, ok := mm.Handlers[messageId.MessageId(packet.Msg.Id)]; ok {
 		handler(packet)
+		return
 	}
 
 	if p := mm.Pm.GetPlayer(packet.Sess.UId); p != nil {

@@ -43,6 +43,7 @@ func (s *Server) Run() {
 
 		go func() {	// 处理会话
 			session := NewSession(conn)
+			session.MessageHandler = s.OnSessionPacket	
 			SessionMgrInstance.AddSession(session)
 			session.Run()
 			SessionMgrInstance.DelSession(session.UId)
