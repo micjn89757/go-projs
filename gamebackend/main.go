@@ -1,13 +1,14 @@
 package main
 
 import (
+	"gamebackend/aop/logger"
 	"gamebackend/common"
 	"gamebackend/world"
 )
 
 func main() {
-	common.InitLogger()
-	defer common.Logger.Sync()
+	logger.InitLogger()
+	defer logger.Logger.Sync()
 
 	world.MM = world.NewMgrMgr()
 	go world.MM.Run()

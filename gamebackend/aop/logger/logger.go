@@ -2,7 +2,7 @@
 使用zap logger
 */
 
-package common
+package logger
 
 import (
 	"fmt"
