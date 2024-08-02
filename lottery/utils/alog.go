@@ -46,7 +46,7 @@ func BinarySearch(arr []float64, target float64) int {
 			return right
 		}
 
-		// len(arr) == 2
+		// len(arr) == 2, mid在left和right之间, 选择left的概率值
 		if left == right-1 {
 			return right
 		}
