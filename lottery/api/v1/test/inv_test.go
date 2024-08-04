@@ -71,11 +71,11 @@ func TestLottery1(t *testing.T) {
 }
 
 func TestLottery2(t *testing.T) {
-	hitMap := make(map[string]int, 10)
-	giftCh := make(chan string, 10000)
+	hitMap := make(map[string]int, 10)	// 每种奖品以及对应抽到的次数
+	giftCh := make(chan string, 10000)	// 通道内的是奖品ID
 	counterCh := make(chan struct{})
 
-	go func() {
+	go func() { // 记录获取的奖品数量
 		for {
 			giftId, ok := <-giftCh
 			if !ok {
