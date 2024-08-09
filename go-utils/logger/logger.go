@@ -4,6 +4,14 @@
 
 package logger
 
+import "io"
+
+type LoggerType = byte
+
+const (
+	SugarLogger LoggerType = iota 
+)
+
 type Logger interface {
 	Debug(msg string, v ...any)
 	Info(msg string, v ...any)
@@ -14,30 +22,40 @@ type Logger interface {
 }
 
 
-type defaultLogger struct {
-	level Level
+func NewLogger(loggerType LoggerType,  writer io.Writer) (Logger, error) {
+	switch loggerType {
+	case SugarLogger:
+		return NewSugar(writer)
+	default:
+		panic("unsupported io type")
+	}
 }
 
-func Debug() {
 
-}
+// type defaultLogger struct {
+// 	level Level
+// }
 
-func Info() {
+// func Debug() {
 
-}
+// }
 
-func Warn() {
+// func Info() {
 
-}
+// }
 
-func Error() {
+// func Warn() {
 
-}
+// }
 
-func Panic() {
+// func Error() {
 
-}
+// }
 
-func Fatal() {
+// func Panic() {
 
-}
+// }
+
+// func Fatal() {
+
+// }
