@@ -31,7 +31,7 @@ var Conf Config
 
 // 初始化配置
 func init() {
-	_, err := toml.DecodeFile("./config/config.toml", &Conf)
+	_, err := toml.DecodeFile("../config/config.toml", &Conf)
 
 
 	if err != nil {

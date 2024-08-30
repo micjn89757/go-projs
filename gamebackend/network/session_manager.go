@@ -48,5 +48,6 @@ func (sm *SessionMgr) AddSession(s *Session) {
 
 // DelSession 删除会话
 func (sm *SessionMgr) DelSession(UId uint64) {
+	sm.Sessions[UId].Conn.Close() // 关闭连接
 	delete(sm.Sessions, UId)
 }
